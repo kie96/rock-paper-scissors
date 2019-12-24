@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    </head>
+    <script>
+        // Mask of Player Choices
+        let rpsCombos = {
+            P1_ROCK     : 0,
+            P1_PAPER    : 1,
+            P1_SCISSORS : 2,
+            P2_ROCK     : 4,
+            P2_PAPER    : 8,
+            P2_SCISSORS : 16
+        }
+
+        // Generates a random number from 0 to range
+        function randomNumber(range) {
+            return Math.floor(Math.random() * range);
+        }
+
+        // Prompts the Player to select a hand (rock, paper, or scissors)
+        function playerHand() {
+            let playerSelection = prompt("Please choose: Rock, Papaer, Scissors, or Random\n");
+            playerSelection = playerSelection.toLowerCase();
+            let invalidInput = true;
+
+            // if the input is invalid, re-prompt the user and loop back to check the selection
+            while (invalidInput) {
+                switch(playerSelection) {
+                    case "rock":
+                        invalidInput = false;
+                        return rpsCombos.P1_ROCK;
+                        break;
+                    case "paper":
+                        invalidInput = false;
+                        return rpsCombos.P1_PAPER;
+                        break;
+                    case "scissors":
+                        invalidInput = false;
+                        return rpsCombos.P1_SCISSORS;
+                        break;
+                    case "random":
+                        invalidInput = false;
+                        return randomHand(true);
+                        break;
+                    default: 
+                        console.log("Invalid Input!\n");
+                        playerSelection = prompt("Please choose again: Rock, Papaer, Scissors, or Random\n");
+                        playerSelection = playerSelection.toLowerCase();
+                        break;
+                }
+            }
+        }
+
+        // Generate a random hand selection (rock, paper, or scissors)
+        function randomHand(isPlayer) {
+            let hand = randomNumber(3);
+            // If a player called randomHand() use the Player Masks
+            if (isPlayer) {
+                switch(hand) {
+                    case 0:
+                        return rpsCombos.P1_ROCK;
+                        break;
+                    case 1:
+                        return rpsCombos.P1_PAPER;
+                        break;
+                    case 2:
+                        return rpsCombos.P1_SCISSORS;
+                        break;
+                    default:
+                        return undefined;
+                        break;
+                }
+            }
+            // If the cpu called randomHand() use the Player Masks
+            else {
+                switch(hand) {
+                    case 0:
+                        return rpsCombos.P2_ROCK;
+                        break;
+                    case 1:
+                        return rpsCombos.P2_PAPER;
+                        break;
+                    case 2:
+                        return rpsCombos.P2_SCISSORS;
+                        break;
+                    default:
+                        return undefined;
+                        break;
+                }
+            }
+        }
+        
+        // Play one round of Rock, Paper, and Scissors against a computer opponent
+        function rpsRound() {
+            let player = playerHand();
+            let cpu = randomHand(false);
+            let outcome = player | cpu;
+
+            switch(outcome) {
+                case 4: // P: ROCK | C: ROCK
+                    console.log("Player: ROCK vs. CPU: ROCK - TIE, No Point\n")
+                    return "TIE";
+                    break;
+                case 5: // P: PAPER | C: ROCK
+                    console.log("Player: PAPER vs. CPU: ROCK - Point for Player\n")
+                    return "Player";
+                    break;
+                case 6: // P: SCISSORS | C: ROCK
+                    console.log("Player: SCISSORS vs. CPU: ROCK - Point for CPU\n")
+                    return "CPU";
+                    break;
+                case 8: // P: ROCK | C: PAPER
+                    console.log("Player: ROCK vs. CPU: PAPER - Point for CPU\n")
+                    return "CPU";
+                    break;
+                case 9: // P: PAPER | C: PAPER
+                    console.log("Player: PAPER vs. CPU: PAPER - TIE, No Point\n")
+                    return "TIE";
+                    break;
+                case 10: // P: SCISSORS | C: PAPER
+                    console.log("Player: SCISSORS vs. CPU: PAPER - Point for Player\n")
+                    return "Player";
+                    break;
+                case 16: // P: ROCK | C: SCISSORS
+                    console.log("Player: ROCK vs. CPU: SCISSORS - Point for Player\n")
+                    return "Player";
+                    break;
+                case 17: // P: PAPER | C: SCISSORS
+                    console.log("Player: PAPER vs. CPU: SCISSORS - Point for CPU\n")
+                    return "CPU";
+                    break;
+                case 18: // P: SCISSORS | C: SCISSORS
+                    console.log("Player: SCISSORS vs. CPU: SCISSORS - TIE, No Point\n")
+                    return "TIE";
+                    break;
+                default:
+                    console.log("Error: Player or CPU Selection was invalid!\n")
+                    return undefined;
+                    break;
+            }
+        }
+
+        // Play a preselected number of rounds of Rock, Paper, and Scissors
+        // The default number of rounds is 5
+        function rpsGame(rounds=5) {
+            let playerScore = 0;
+            let cpuScore = 0;
+            let tieCount = 0;
+            let roundWinner = "";
+            let gameWinner = "";
+
+            for (i =0; i < rounds; i++) {
+                console.log("Round " + (i + 1));
+                roundWinner = rpsRound();
+
+                switch(roundWinner) {
+                    case "Player":
+                        playerScore++;
+                        break;
+                    case "CPU":
+                        cpuScore++;
+                        break;
+                    case "TIE":
+                        tieCount++;
+                        break;
+                }
+            }
+                if (playerScore == cpuScore) {
+                    console.log("This Game Was A Tie!\n");
+                }
+                else {
+                    gameWinner = playerScore > cpuScore ? "The Player!" : "The CPU!";
+                    console.log("Game Winner: " + gameWinner + "\n");
+                }
+                console.log("Player Score: " + playerScore + ", CPU Score: " + cpuScore + ", Tie Count: " + tieCount);
+        }
+
+        // Play 5 rounds of Rock, Paper, Scissors
+        console.log(rpsGame(5));
+
+    </script>
+</html>
